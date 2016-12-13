@@ -456,6 +456,20 @@
 .woocommerce .quantity {
   font-size: 0;
 }
+.woocommerce .quantity .drop {
+  display: inline-block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  color: #343434;
+  text-align: center;
+  width: 46px;
+  height: 42px;
+  line-height: 40px;
+  margin: 0 -1px;
+  padding: 0;
+  border: 1px solid #eee;
+  background-color: #fff;
+}
 .woocommerce .quantity .qty {
   display: inline-block;
   font-family: "Montserrat", sans-serif;
