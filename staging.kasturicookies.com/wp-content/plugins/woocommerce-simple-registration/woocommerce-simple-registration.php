@@ -74,7 +74,7 @@ class WooCommerce_Simple_Registration {
 		add_filter( 'body_class', array( $this, 'body_class' ) );
 
 		// add first name and last name to register form
-		add_action( 'woocommerce_register_form_start', array( $this, 'add_name_input' ) );
+		#add_action( 'woocommerce_register_form_start', array( $this, 'add_name_input' ) );
 		add_action( 'woocommerce_created_customer', array( $this, 'save_name_input' ) );
 
 		/**
