@@ -1156,6 +1156,9 @@
   border: 1px solid #eee;
   border-radius: 0;
   margin-bottom: 30px;
+
+  width: 50%; 
+  float: left !important;
 }
 .woocommerce form.checkout_coupon {
   font-size: 0;
