@@ -1,0 +1,1 @@
+The content images in this folder has been compressed with https://tinyjpg.com/
