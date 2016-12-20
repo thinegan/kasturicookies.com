@@ -202,7 +202,7 @@ function wc_register_form_password_repeat() {
 	</p>
 
 <p class="form-row form-row-wide">
-		<label for="reg_password2"><?php _e( 'By signing up, I confirm that i agree to <a target="_blank" href="https://www.kasturicookies.com/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="https://www.kasturicookies.com/terms-condition/">Term & Condition</a>', 'woocommerce' ); ?></label>
+		<label for="reg_password2"><?php _e( 'By signing up, I confirm that i agree to <a target="_blank" href="https://www.kasturicookies.com/privacy-policy/">Privacy Policy</a> and <a target="_blank" href="https://www.kasturicookies.com/terms-conditions/">Term & Condition</a>', 'woocommerce' ); ?></label>
 </p>
 	<?php
 }
