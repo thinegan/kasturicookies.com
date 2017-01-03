@@ -54,7 +54,7 @@ $classes[] = 'vu_product-item';
 $vu_product_classes = !empty($vu_product_classes) ? ' '. $vu_product_classes : '';
 ?>
 
-<div class="vu_product-item-container col-xs-12 col-sm-6 col-md-<?php echo absint(12 / $woocommerce_loop['columns']); ?><?php echo $vu_product_classes; ?>">
+<div class="vu_product-item-container col-xs-12">
 	<article <?php post_class( $classes ); ?> data-id="<?php echo get_the_ID(); ?>">
 
 		<?php do_action( 'woocommerce_before_shop_loop_item' ); ?>
