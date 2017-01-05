@@ -1396,3 +1396,9 @@
   color: #fff;
   background-color: #fdb822;
 }
+.vu_wc-related-products {
+  margin-bottom: 30px;
+}
+.vu_wc-related-products .vu_product-item-container {
+  width: 100% !important;
+}
