@@ -278,7 +278,7 @@
 		?>
 
 			<?php if( $layout != false ) { ?>
-				<div class="vu_product-item-container col-xs-12">
+				<div class="vu_product-item-container col-xs-12 col-sm-6 col-md-<?php echo 12 / $layout; ?><?php vu_extra_class($class); ?>">
 			<?php } ?>
 
 			<article <?php post_class('vu_product-item') ?> data-id="<?php the_ID(); ?>">
