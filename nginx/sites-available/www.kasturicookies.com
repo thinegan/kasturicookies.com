@@ -17,7 +17,8 @@ server {
 	ssl_session_timeout 10m;
 	ssl_protocols TLSv1.2;
 	ssl_prefer_server_ciphers on;
-	ssl_ciphers "ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:RSA+3DES:!RC4:HIGH:!ADH:!AECDH:!MD5";
+#	ssl_ciphers "ECDH+AESGCM:ECDH+AES256:ECDH+AES128:!DH+3DES:!RSA+3DES:!RC4:HIGH:!ADH:!AECDH:!MD5";
+	ssl_ciphers "HIGH:!aNULL:!MD5:!kEDH";
 	ssl_certificate /etc/ssl/certs/kasturicookies.com.crt;
 	ssl_certificate_key /etc/ssl/private/kasturicookies.com.key;
 	ssl_session_cache shared:SSL:10m;
@@ -58,7 +59,7 @@ server {
 		proxy_cache_valid 302 301 12h;
 		proxy_cache_key $host$uri#is_args$args;
 
-		if ($request_filename ~* ^.*?.(eot)|(ttf)|(woff)|(svg)|(otf)|(webm)$){
+		if ($request_filename ~* ^.*?.(eot)|(ttf)|(woff)|(woff2)|(svg)|(otf)|(webm)$){
              		add_header Access-Control-Allow-Origin *;
           	}
 	}
